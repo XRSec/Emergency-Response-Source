@@ -1,2 +1,8 @@
 # Emergency-Response
-蓝队应急响应工具（支持麒麟系统）
+
+![icon](assert/icon.jpg)
+
+## TODO
+- [] Add Linux SH to [sh](/tree/main/sh)
+- [] Add Exec General module
+- [] ...
