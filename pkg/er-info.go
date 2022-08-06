@@ -45,7 +45,7 @@ func (e *ERInfoApp) View() {
 	fmt.Println("----------------------------------------------------")
 	fmt.Printf("操作系统: %v\n主机名  : %v\nIP 地址 : %v\n", e.SystemOS, e.Hostname, e.IPAddr)
 	fmt.Printf("总内存  : %.2fGB\n已用    : %.2fGB\n使用率  : %.2f%%\n", e.MemAll, e.MemUse, e.MemUsePercent)
-	if e.SystemOS != "Windows" {
+	if e.SystemOS != "windows" {
 		fmt.Println("在线用户:")
 	}
 	for i := 0; i < len(e.OnlineUser); i++ {
