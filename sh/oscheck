@@ -1,0 +1,207 @@
+#!/bin/bash
+
+checkSysUser(){
+echo "正在查询特权账户------"
+echo "特权账户为:">>nohup.out
+echo `awk -F: '$3==0{print $1}' /etc/passwd` >>nohup.out
+#echo "\n">>nohup.out
+
+echo "正在查询远程可登陆账号信息------"
+echo "可登陆账号有:">>nohup.out
+awk '/\$1|\$6/{print $1}' /etc/shadow >>nohup.out
+
+
+echo "正在查询有sudo权限的账号信息-------"
+echo "有sudo权限的账号有:">>nohup.out
+echo `more /etc/sudoers | grep -v "^#\|^$" | grep "ALL=(ALL)"`>>nohup.out
+
+
+echo "正在查询当前系统的用户信息--------"
+echo "当前登录用户有:">>nohup.out
+echo `who`>>nohup.out
+echo "#tty local login pts remote login">>nohup.out
+
+
+echo "查询完毕"
+echo "您可以选择将进行的操作:">>nohup.out
+echo "usermod -L user 禁用账号，账号无法登陆,/etc/shadow第二栏为!开头">>nohup.out
+echo "userdel user 删除user用户">>nohup.out
+echo "userdel -r user 将删除user用户，并且将/home目录下一并删除">>nohup.out
+
+
+}
+
+checkProcess(){
+echo "正在查询端口信息-----"
+echo "-----------------------------------------------------------------------">>nohup.out
+echo "当前所有已建立的连接如下">>nohup.out
+oldifs="$IFS"
+IFS=$'\n'
+
+for line in `netstat -pantl` 
+do
+	echo "$line" >>nohup.out
+done
+
+IFS="$oldifs"
+echo "当前所有的端口信息如下">>nohup.out
+oldifs="$IFS"
+IFS=$'\n'
+
+for line in `netstat -pantu` 
+do
+	echo "$line" >>nohup.out
+done
+
+IFS="$oldifs"
+
+echo "正在查询进程信息-------"
+echo "当前进程详情如下---ps -aux">>nohup.out
+oldifs="$IFS"
+IFS=$'\n'
+
+for line in `ps -aux` 
+do
+	echo "$line" >>nohup.out
+done
+
+IFS="$oldifs"
+
+echo "当前进程详情如下---ps -ef">>nohup.out
+oldifs="$IFS"
+IFS=$'\n'
+
+for line in `ps -ef` 
+do
+	echo "$line" >>nohup.out
+done
+
+IFS="$oldifs"
+
+}
+
+checkSystemService(){
+
+echo "正在查询系统服务-----"
+echo "-------------------------------------------------------">>nohup.out
+echo "系统服务有:">>nohup.out
+oldifs="$IFS"
+IFS=$'\n'
+
+for line in `systemctl list-unit-files --type=service | grep "enabled"` 
+do
+	echo "$line" >>nohup.out
+done
+
+IFS="$oldifs"
+#echo `chkconfig --list | grep "3:on\|5:on"` >>nohup.out #CentOS6
+
+
+echo "正在查询开机启动项"
+echo "开机启动项有:">>nohup.out
+oldifs="$IFS"
+IFS=$'\n'
+
+for line in `more /etc/rc.local /etc/rc.d/rc[0~6].d ls -l /etc/rc.d/rc3.d/` 
+do
+	echo "$line" >>nohup.out
+done
+
+IFS="$oldifs"
+
+}
+
+checkCron(){
+echo "正在收集计划任务并打包在nohup.tar.gz中"
+echo "-----------------------------------">>nohup.out
+mkdir cron
+mkdir cron/spool
+mkdir cron/crontab
+mkdir cron/crond
+mkdir cron/crond_day
+mkdir cron/crond_hour
+mkdir cron/crond_month
+mkdir cron/crond_week
+mkdir cron/anacrontab
+mkdir cron/anacron_spool
+
+cp /var/spool/cron/* cron/spool
+cp /etc/crontab cron/crontab
+cp /etc/cron.d/* cron/crond
+cp /etc/cron.daily/* cron/crond_day
+cp /etc/cron.hourly/* cron/crond_hour
+cp /etc/cron.monthly/* cron/crond_month
+cp /etc/cron.weekly/* cron/crond_week
+cp /etc/anacrontab cron/anacrontab
+cp /var/spool/anacron/* cron/anacron_spool
+tar -czvf cron.tar.gz cron
+rm -rf cron
+
+echo "成功打包计划任务">>nohup.out
+
+
+}
+
+checkHistory(){
+echo "正在备份历史记录"
+mkdir history_bak
+#mkdir history_bak/history_root
+#history >> history_bak/history_root
+#mkdir history_bak/history_home
+history >>history_bak/root_cammand
+for user in `ls /home` 
+do
+	echo "$user used: -----------------------------------" >>history_bak/user_cammand
+	cat  /home/$user/.bash_history >> history_bak/user_cammand
+	
+done
+
+tar -czvf history.tar.gz history_bak
+rm -rf history_bak
+
+echo "成功完成打包历史记录">>nohup.out
+}
+
+
+checkSystemLog(){
+echo "正在读取系统日志"
+echo "系统日志读取内容如下---------------------------------------------">>nohup.out
+echo "存在爆破行为的IP:--------------------------------">>nohup.out
+grep "Failed password for root" /var/log/secure | awk '{print $11}' | sort | uniq -c | sort -nr >>nohup.out
+echo "登录成功的IP:------------------------------------">>nohup.out
+grep "Accepted " /var/log/secure | awk '{print $11}' | sort | uniq -c | sort -nr >>nohup.out
+echo "登录成功的日期,用户名,IP-------------------------------------">>nohup.out
+grep "Accepted " /var/log/secure | awk '{print $1,$2,$3,$9,$11}' >>nohup.out
+echo "读取系统日志完毕">>nohup.out
+
+}
+
+
+
+
+
+
+checkHistory
+echo "历史操作记录已备份打包"
+checkSysUser
+echo "系统账号读取完毕"
+checkProcess
+echo "进程读取完毕"
+checkSystemService
+echo "系统服务/开机启动项读取完毕"
+checkCron
+echo "计划任务打包完毕"
+checkSystemLog
+echo "系统日志读取完毕"
+
+
+
+
+
+
+
+
+
+
+
+

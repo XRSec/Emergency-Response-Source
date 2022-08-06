@@ -3,6 +3,6 @@
 ![icon](assert/icon.jpg)
 
 ## TODO
-- [ ] Add Linux SH to [sh](/sh)
+- [ ] Add Linux SH to [SH](/sh)
 - [ ] Add Exec General module
 - [ ] ...
