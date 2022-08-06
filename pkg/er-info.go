@@ -131,5 +131,5 @@ func (e *ERInfoApp) GetCpu() {
 	logicalCnt, _ := cpu.Counts(true)
 	totalPercent, _ := cpu.Percent(5*time.Second, false)
 	e.Cpu = fmt.Sprintf("%d 核心 %d 能效", physicalCnt, logicalCnt)
-	e.cpuPercent = totalPercent[0] / float64(physicalCnt)
+	e.cpuPercent = totalPercent[0]
 }
