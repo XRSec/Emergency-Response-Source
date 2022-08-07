@@ -17,7 +17,8 @@ var Api App
 
 ```bash
 # https://github.com/XRSec/xgo
-sudo wget https://github.com/XRSec/xgo/releases/download/v0.21.0/xgo-$(uname -s)-$(uname -m) -O /usr/local/bin/xgo
+# [国内] sudo wget "https://ghproxy.com/https://github.com/XRSec/xgo/releases/download/$(curl -sL "https://api.github.com/repos/crazy-max/xgo/releases/latest" | grep tag_name | awk '{print $2}' | tr -d '"' | tr -d ',')/xgo-$(uname -s)-$(uname -m)" -O /usr/local/bin/xgo
+sudo wget "https://ghproxy.com/https://github.com/XRSec/xgo/releases/download/$(curl -sL "https://api.github.com/repos/crazy-max/xgo/releases/latest" | grep tag_name | awk '{print $2}' | tr -d '"' | tr -d ',')/xgo-$(uname -s)-$(uname -m)" -O /usr/local/bin/xgo
 sudo chmod +x /usr/local/bin/xgo
 xgo .
 cd github.com/XRSec/
