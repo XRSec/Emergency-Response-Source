@@ -16,6 +16,11 @@ var Api App
 ### Build
 
 ```bash
+# https://github.com/XRSec/xgo
+sudo wget https://github.com/XRSec/xgo/releases/download/v0.21.0/xgo-$(uname -s)-$(uname -m) -O /usr/local/bin/xgo
+sudo chmod +x /usr/local/bin/xgo
+xgo .
+cd github.com/XRSec/
 ```
 
 - [Emergency-Response-Notes](https://github.com/Bypass007/Emergency-Response-Notes)
