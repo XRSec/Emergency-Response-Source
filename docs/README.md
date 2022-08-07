@@ -30,3 +30,6 @@ cd github.com/XRSec/
 - [Linux-emergency-response-script](https://github.com/looosooo/Linux-emergency-response-script)
 - [LinuxEmergency](https://github.com/b0bac/LinuxEmergency)
 - [GScan](https://github.com/grayddq/GScan)
+- [zhihu-gopsutil](https://zhuanlan.zhihu.com/p/126362239#%E4%BD%BF%E7%94%A8%E7%8E%87)
+- [soiiy-gopsutil](http://soiiy.com/go/16228.html)
+- [jianshu–gopsutil](https://www.jianshu.com/p/914acdb5d7c2)
